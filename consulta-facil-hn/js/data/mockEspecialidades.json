@@ -1,0 +1,6 @@
+[
+  { "id": 1, "nome": "Clínico Geral", "descricao": "Atendimento médico geral, avaliação inicial e encaminhamentos." },
+  { "id": 2, "nome": "Pediatria", "descricao": "Atendimento à saúde de crianças e adolescentes." },
+  { "id": 3, "nome": "Ginecologia", "descricao": "Saúde da mulher, pré-natal e exames preventivos." },
+  { "id": 4, "nome": "Cardiologia", "descricao": "Diagnóstico e acompanhamento de doenças do coração." }
+]

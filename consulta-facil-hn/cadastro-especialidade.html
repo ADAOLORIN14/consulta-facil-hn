@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de especialidade — Consulta Fácil HN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <svg class="mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="20" cy="20" r="18" stroke="#0E5C4E" stroke-width="2.5"/>
+      <path d="M8 20h6l3-8 4 16 3-8h8" stroke="#D98E2B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <a class="brand" href="index.html">Consulta Fácil HN</a>
+    <span class="brand-sub">Hugo Napoleão – PI</span>
+  </div>
+</header>
+
+<main>
+  <a class="back-link" href="index.html">&larr; Voltar</a>
+  <h1>Cadastro de especialidade</h1>
+  <p>Preencha os dados abaixo para cadastrar uma nova especialidade médica. (RF02)</p>
+
+  <div id="alert" class="alert" style="display:none;" role="alert"></div>
+
+  <div class="card">
+    <form id="form-especialidade" novalidate>
+      <div class="field">
+        <label for="nome">Nome da especialidade</label>
+        <input type="text" id="nome" name="nome" required>
+        <span class="field-error"></span>
+      </div>
+      <div class="field">
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" name="descricao" required></textarea>
+        <span class="field-error"></span>
+      </div>
+      <button type="submit" class="primary">Cadastrar</button>
+    </form>
+  </div>
+
+  <div class="list-section">
+    <h2>Especialidades cadastradas</h2>
+    <div id="tabela-especialidades"></div>
+  </div>
+</main>
+
+<footer>Projeto Integrador II — Equipe Inova — UESPI/UAPI</footer>
+
+<script src="js/mockLoader.js"></script>
+<script src="js/cadastroEspecialidade.js"></script>
+</body>
+</html>

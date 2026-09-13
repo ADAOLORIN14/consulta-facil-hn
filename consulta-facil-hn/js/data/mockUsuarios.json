@@ -1,0 +1,6 @@
+[
+  { "id": 1, "nome": "Maria das Graças Silva", "cpf": "11122233396", "telefone": "(89) 99876-5432", "tipo": "paciente" },
+  { "id": 2, "nome": "João Batista Oliveira", "cpf": "22233344405", "telefone": "(89) 99765-4321", "tipo": "paciente" },
+  { "id": 3, "nome": "Francisca Alves Costa", "cpf": "33344455508", "telefone": "(89) 99654-3210", "tipo": "paciente" },
+  { "id": 4, "nome": "Antônio Pereira Souza", "cpf": "44455566619", "telefone": "(89) 99543-2109", "tipo": "paciente" }
+]

@@ -1,0 +1,6 @@
+[
+  { "id": 1, "nome": "Dr. Arnaldo Ferreira", "registro": "CRM-PI 4521", "telefone": "(89) 99123-4567", "email": "arnaldo.ferreira@hn.pi.gov.br", "especialidadeIds": [1] },
+  { "id": 2, "nome": "Dra. Camila Rocha", "registro": "CRM-PI 3897", "telefone": "(89) 99234-5678", "email": "camila.rocha@hn.pi.gov.br", "especialidadeIds": [2] },
+  { "id": 3, "nome": "Dra. Patrícia Lima", "registro": "CRM-PI 5210", "telefone": "(89) 99345-6789", "email": "patricia.lima@hn.pi.gov.br", "especialidadeIds": [3] },
+  { "id": 4, "nome": "Dr. Marcos Vinícius", "registro": "CRM-PI 2984", "telefone": "(89) 99456-7890", "email": "marcos.vinicius@hn.pi.gov.br", "especialidadeIds": [4, 1] }
+]
