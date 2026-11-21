@@ -1,15 +1,33 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  const API_BASE_URL = 'http://127.0.0.1:8000';
   const form = document.getElementById('form-usuario');
   const cpfInput = document.getElementById('cpf');
   const alertBox = document.getElementById('alert');
   const tabela = document.getElementById('tabela-usuarios');
 
   let usuarios = [];
+
+  if (window.UIHelpers) UIHelpers.mostrarLoading('Carregando pacientes...');
   try {
-    usuarios = await carregarMock('usuarios', 'js/data/mockUsuarios.json');
+    const resposta = await fetch(`${API_BASE_URL}/usuarios`);
+    if (resposta.ok) {
+      usuarios = await resposta.json();
+    } else {
+      throw new Error('Falha ao consultar API');
+    }
   } catch (e) {
-    mostrarAlerta('error', 'Não foi possível carregar os dados iniciais. Confira se o projeto está sendo aberto por um servidor local (veja o README).');
-    return;
+    try {
+      usuarios = await carregarMock('usuarios', 'js/data/mockUsuarios.json');
+      if (window.UIHelpers) {
+        UIHelpers.mostrarToast('Modo local ativo (API offline).', 'info');
+      }
+    } catch (errMock) {
+      mostrarAlerta('error', 'Não foi possível carregar os dados iniciais. Confira se o servidor está ativo.');
+      if (window.UIHelpers) UIHelpers.esconderLoading();
+      return;
+    }
+  } finally {
+    if (window.UIHelpers) UIHelpers.esconderLoading();
   }
 
   renderTabela();
@@ -18,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     cpfInput.value = formatarCpf(cpfInput.value);
   });
 
-  form.addEventListener('submit', (evento) => {
+  form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparErros(form);
 
@@ -37,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       marcarErro('cpf', 'CPF inválido. Confira os números digitados.');
       valido = false;
     } else if (usuarios.some(u => u.cpf === cpf)) {
-      marcarErro('cpf', 'Este CPF já está cadastrado (Regra de Negócio 1 — Entrega 1).');
+      marcarErro('cpf', 'Este CPF já está cadastrado.');
       valido = false;
     }
     if (telefone.replace(/\D/g, '').length < 10) {
@@ -51,15 +69,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!valido) {
       mostrarAlerta('error', 'Corrija os campos destacados antes de continuar.');
+      if (window.UIHelpers) UIHelpers.mostrarToast('Verifique os campos destacados.', 'error');
       return;
     }
 
-    const novoUsuario = { id: proximoId(usuarios), nome, cpf, telefone, tipo: 'paciente' };
-    usuarios.push(novoUsuario);
-    salvarMock('usuarios', usuarios);
-    renderTabela();
-    form.reset();
-    mostrarAlerta('success', `Cadastro de ${nome} realizado com sucesso.`);
+    const payload = { nome, cpf, telefone, senha, tipo: 'paciente' };
+
+    if (window.UIHelpers) UIHelpers.mostrarLoading('Salvando cadastro do paciente...');
+    try {
+      const resposta = await fetch(`${API_BASE_URL}/usuarios`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!resposta.ok) {
+        const erroApi = await resposta.json().catch(() => ({}));
+        throw new Error(erroApi.detail || 'Erro ao cadastrar paciente na API.');
+      }
+
+      const criado = await resposta.json();
+      usuarios.push(criado);
+      salvarMock('usuarios', usuarios);
+      renderTabela();
+      form.reset();
+      mostrarAlerta('success', `Cadastro de ${nome} realizado com sucesso.`);
+      if (window.UIHelpers) UIHelpers.mostrarToast(`Paciente ${nome} cadastrado!`, 'success');
+    } catch (erro) {
+      // Fallback local caso a API não esteja acessível no momento
+      const novoUsuario = { id: proximoId(usuarios), nome, cpf, telefone, tipo: 'paciente' };
+      usuarios.push(novoUsuario);
+      salvarMock('usuarios', usuarios);
+      renderTabela();
+      form.reset();
+      mostrarAlerta('success', `Cadastro de ${nome} salvo localmente.`);
+      if (window.UIHelpers) UIHelpers.mostrarToast(`Cadastro de ${nome} salvo localmente.`, 'info');
+    } finally {
+      if (window.UIHelpers) UIHelpers.esconderLoading();
+    }
   });
 
   function renderTabela() {
@@ -85,5 +132,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     alertBox.className = `alert ${tipo}`;
     alertBox.textContent = mensagem;
     alertBox.style.display = 'block';
+    if (window.UIHelpers) {
+      UIHelpers.mostrarToast(mensagem, tipo === 'error' ? 'error' : 'success');
+    }
   }
 });

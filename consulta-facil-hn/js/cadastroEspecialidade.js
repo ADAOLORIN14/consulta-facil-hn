@@ -1,19 +1,37 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  const API_BASE_URL = 'http://127.0.0.1:8000';
   const form = document.getElementById('form-especialidade');
   const alertBox = document.getElementById('alert');
   const tabela = document.getElementById('tabela-especialidades');
 
   let especialidades = [];
+
+  if (window.UIHelpers) UIHelpers.mostrarLoading('Carregando especialidades...');
   try {
-    especialidades = await carregarMock('especialidades', 'js/data/mockEspecialidades.json');
+    const resposta = await fetch(`\${API_BASE_URL}/especialidades`);
+    if (resposta.ok) {
+      especialidades = await resposta.json();
+    } else {
+      throw new Error('Falha ao consultar API');
+    }
   } catch (e) {
-    mostrarAlerta('error', 'Não foi possível carregar os dados iniciais. Confira se o projeto está sendo aberto por um servidor local (veja o README).');
-    return;
+    try {
+      especialidades = await carregarMock('especialidades', 'js/data/mockEspecialidades.json');
+      if (window.UIHelpers) {
+        UIHelpers.mostrarToast('Modo local ativo (API offline).', 'info');
+      }
+    } catch (errMock) {
+      mostrarAlerta('error', 'Não foi possível carregar os dados iniciais. Confira se o servidor está ativo.');
+      if (window.UIHelpers) UIHelpers.esconderLoading();
+      return;
+    }
+  } finally {
+    if (window.UIHelpers) UIHelpers.esconderLoading();
   }
 
   renderTabela();
 
-  form.addEventListener('submit', (evento) => {
+  form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparErros(form);
 
@@ -35,15 +53,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!valido) {
       mostrarAlerta('error', 'Corrija os campos destacados antes de continuar.');
+      if (window.UIHelpers) UIHelpers.mostrarToast('Corrija os campos destacados.', 'error');
       return;
     }
 
-    const nova = { id: proximoId(especialidades), nome, descricao };
-    especialidades.push(nova);
-    salvarMock('especialidades', especialidades);
-    renderTabela();
-    form.reset();
-    mostrarAlerta('success', `Especialidade "${nome}" cadastrada com sucesso.`);
+    const payload = { nome, descricao };
+
+    if (window.UIHelpers) UIHelpers.mostrarLoading('Salvando especialidade...');
+    try {
+      const resposta = await fetch(`${API_BASE_URL}/especialidades`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });  if (!resposta.ok) { const erroApi = await resposta.json().catch(() => ({})); throw new Error(erroApi.detail \vert{}\vert{} 'Erro ao cadastrar especialidade na API.'); }  const criada = await resposta.json(); especialidades.push(criada); salvarMock('especialidades', especialidades); renderTabela(); form.reset(); mostrarAlerta('success', `Especialidade "${nome}" cadastrada com sucesso.`);
+      if (window.UIHelpers) UIHelpers.mostrarToast(`Especialidade "${nome}" cadastrada!`, 'success'); } catch (erro) { const nova = { id: proximoId(especialidades), nome, descricao }; especialidades.push(nova); salvarMock('especialidades', especialidades); renderTabela(); form.reset(); mostrarAlerta('success', `Especialidade "${nome}" salva localmente.`);
+      if (window.UIHelpers) UIHelpers.mostrarToast(`Especialidade "\${nome}" salva localmente.`, 'info');
+    } finally {
+      if (window.UIHelpers) UIHelpers.esconderLoading();
+    }
   });
 
   function renderTabela() {
@@ -52,9 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
     const linhas = especialidades.slice().reverse().map(e =>
-      `<tr><td>${escapeHtml(e.nome)}</td><td>${escapeHtml(e.descricao)}</td></tr>`
-    ).join('');
-    tabela.innerHTML = `<table><thead><tr><th>Especialidade</th><th>Descrição</th></tr></thead><tbody>${linhas}</tbody></table>`;
+      `<tr><td>\${escapeHtml(e.nome)}</td><td>${escapeHtml(e.descricao)}</td></tr>` ).join(''); tabela.innerHTML = `<table><thead><tr><th>Especialidade</th><th>Descrição</th></tr></thead><tbody>${linhas}</tbody></table>`;
   }
 
   function marcarErro(campoId, mensagem) {
@@ -66,8 +87,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     form.querySelectorAll('.field').forEach(f => f.classList.remove('has-error'));
   }
   function mostrarAlerta(tipo, mensagem) {
-    alertBox.className = `alert ${tipo}`;
-    alertBox.textContent = mensagem;
-    alertBox.style.display = 'block';
-  }
-});
+    alertBox.className = `alert

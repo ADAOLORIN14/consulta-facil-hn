@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agendamento de Consultas — Consulta Fácil HN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <svg class="mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="20" cy="20" r="18" stroke="#0E5C4E" stroke-width="2.5"/>
+      <path d="M8 20h6l3-8 4 16 3-8h8" stroke="#D98E2B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <a class="brand" href="index.html">Consulta Fácil HN</a>
+    <span class="brand-sub">Hugo Napoleão – PI</span>
+  </div>
+</header>
+
+<main class="wide">
+  <p><a href="index.html">← Voltar ao início</a></p>
+  <h1>Agendamento de Consultas</h1>
+  <p>Selecione o paciente, o profissional, a data e o canal de lembrete para confirmar o atendimento na UBS.</p>
+
+  <div id="alert" class="alert" style="display:none;" role="alert"></div>
+
+  <form id="form-agendamento" novalidate>
+    <div class="field">
+      <label for="paciente">Paciente</label>
+      <select id="paciente" required>
+        <option value="">Selecione o paciente...</option>
+      </select>
+      <span class="field-error"></span>
+    </div>
+
+    <div class="field">
+      <label for="especialidade">Especialidade</label>
+      <select id="especialidade" required>
+        <option value="">Selecione a especialidade...</option>
+      </select>
+      <span class="field-error"></span>
+    </div>
+
+    <div class="field">
+      <label for="profissional">Profissional de Saúde</label>
+      <select id="profissional" required>
+        <option value="">Selecione o profissional...</option>
+      </select>
+      <span class="field-error"></span>
+    </div>
+
+    <div class="field">
+      <label for="data_consulta">Data da Consulta</label>
+      <input type="date" id="data_consulta" required>
+      <span class="field-error"></span>
+    </div>
+
+    <div class="field">
+      <label for="horario">Horário Disponível</label>
+      <select id="horario" required>
+        <option value="">Selecione o horário...</option>
+        <option value="08:00">08:00 — Manhã</option>
+        <option value="09:00">09:00 — Manhã</option>
+        <option value="10:00">10:00 — Manhã</option>
+        <option value="14:00">14:00 — Tarde</option>
+        <option value="15:00">15:00 — Tarde</option>
+        <option value="16:00">16:00 — Tarde</option>
+      </select>
+      <span class="field-error"></span>
+    </div>
+
+    <div class="field">
+      <label for="canal_lembrete">Canal de Lembrete e Confirmação</label>
+      <select id="canal_lembrete">
+        <option value="whatsapp">WhatsApp (Recomendado)</option>
+        <option value="sms">SMS Convencional</option>
+        <option value="nenhum">Não enviar lembrete automático</option>
+      </select>
+      <span class="field-error"></span>
+    </div>
+
+    <button type="submit" class="btn-primary">Confirmar Agendamento</button>
+  </form>
+
+  <h2 style="margin-top:36px;">Consultas Agendadas</h2>
+  <div id="tabela-agendamentos"></div>
+</main>
+
+<footer>Projeto Integrador II — Equipe Inova — UESPI/UAPI</footer>
+
+<script src="js/mockLoader.js"></script>
+<script src="js/uiHelpers.js"></script>
+<script src="js/agendamento.js"></script>
+</body>
+</html>
